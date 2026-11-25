@@ -115,7 +115,9 @@ cd agenticharvest-example-hire-to-onboard
 On the first run, `run.sh`:
 
 1. Finds Podman (or Docker) and checks it is running.
-2. Fetches AgenticHarvest into `./.agenticharvest`, with the live stack as a submodule.
+2. Fetches AgenticHarvest into `./.agenticharvest` (once), with this example and
+   the live stack as submodules. The run uses that copy of the example, not the
+   files in this clone.
 3. Starts Odoo, Keycloak, and Directus in containers. The first start pulls
    about 2 GB of images and initializes Odoo's database, which takes a few
    minutes. Later runs take seconds.
@@ -835,7 +837,7 @@ Tool 'send_operation' has a write effect and requires 'confirm: true' to run.
 is read-only:
 
 ```
-'createItemsShipments' changes state (POST); use send_operation with confirm=true.
+'createItemsOnboardingTasks' changes state (POST); use send_operation with confirm=true.
 ```
 
 **Other checks**, on every call:
@@ -852,8 +854,13 @@ is read-only:
 
 ## 13. Change it
 
-**Different people.** Edit `COHORTS` and `NEW_HIRE` in `workflow.py`. Each entry
-is `(name, email handle, role, stages before the hire)`. The stage names must
+Make these edits in an AgenticHarvest checkout (`examples/hire_to_onboard/`)
+and run from there. A standalone clone's `run.sh` runs the copy inside
+`.agenticharvest`.
+
+**Different people.** Edit `COHORTS` and `NEW_HIRE` in `workflow.py`. Each
+`COHORTS` entry is `(name, email handle, role, stages before the hire)`;
+`NEW_HIRE` is `(name, email handle, role)`. The stage names must
 exist in Odoo's Recruitment: New, Qualification, First Interview, Second
 Interview, Contract Proposal, Contract Signed.
 
@@ -917,7 +924,7 @@ from AgenticHarvest are generic:
 | `agenticharvest.core.events`: `RecordMapping`, `ObjectRef`, `import_records` | Stage 2 |
 | `agenticharvest.mining`: `BupaRMiner`, `VariantMiner`, `collapse_repeats`, `check_trace` | Mining and conformance |
 | `agenticharvest.mining.analysis`: `handoffs`, `object_centric_dfg`, `check_rules`, `Rule` | Stages 3 and 4 |
-| `agenticharvest.orchestration`: `compile_plan`, `restrict_tools` | Stages 4 and 5 |
+| `agenticharvest.orchestration.compile`: `compile_plan`, `restrict_tools` | Stages 4 and 5 |
 
 AgenticHarvest's test `tests/examples/test_cross_system.py` runs stages 1 to 4
 against the live systems and asserts the results shown on this page:

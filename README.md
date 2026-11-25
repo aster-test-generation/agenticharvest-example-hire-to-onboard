@@ -42,7 +42,11 @@ cd agenticharvest-example-hire-to-onboard
 
 On first use, `run.sh` fetches AgenticHarvest (with this example and the live stack
 as its submodules) into `./.agenticharvest`. Inside an AgenticHarvest checkout, it uses that
-checkout instead. The first run pulls about 2 GB of images and takes a few
+checkout instead. Cloned on its own, `run.sh` runs the copy of this example
+inside `.agenticharvest`, so edits to the files in this clone are not used. To
+change the example, work in an AgenticHarvest checkout
+(`git clone --recurse-submodules https://github.com/IBM/agenticharvest.git`)
+and edit `examples/hire_to_onboard/`. The first run pulls about 2 GB of images and takes a few
 minutes. [`agenticharvest-systems`](https://github.com/aster-test-generation/agenticharvest-systems#readme) explains what starts, how to
 open the apps in a browser, and how to fix common problems.
 
@@ -85,20 +89,21 @@ puts every HR call on the person.
 One of the four observed hires, Alan, has his account created **before** his
 contract is signed. This is the deviation the policy check should catch.
 
-## The four stages
+## The five stages
 
 ### 1. Observe
 
 ```
   ada.byron     applicant 7, employee 9, tasks [13, 14, 15]
   …
-  29 tool calls -> hire_to_onboard_out/observed.ocel.json
+  33 tool calls -> hire_to_onboard_out/observed.ocel.json
 ```
 
 ### 2. Import: the same process from the systems' own records
 
-Each source is turned into events by a declarative `RecordMapping`, and
-nothing in `src/` knows about any of these products:
+Each source is turned into events by a declarative `RecordMapping` in this
+example's `workflow.py`; AgenticHarvest's importer (`import_records`) knows
+nothing about these products:
 
 ```python
 KEYCLOAK_HISTORY = RecordMapping(
